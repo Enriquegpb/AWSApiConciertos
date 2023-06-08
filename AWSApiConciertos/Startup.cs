@@ -12,9 +12,6 @@ public class Startup
 {
     
 
-    
-    string secret = HelperSecretManager.GetSecretAsync().GetAwaiter().GetResult();
-
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -26,7 +23,8 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container
     public async void ConfigureServices(IServiceCollection services)
     {
-        KeyModel model = JsonConvert.DeserializeObject<KeyModel>(this.secret);
+        string secret = HelperSecretManager.GetSecretAsync().GetAwaiter().GetResult();
+        KeyModel model = JsonConvert.DeserializeObject<KeyModel>(secret);
         string connectionString = model.ServerConnection;
         services.AddTransient<RepositoryEventos>();
         services.AddDbContext<EventosContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
